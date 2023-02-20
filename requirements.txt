@@ -1,0 +1,4 @@
+requests
+aiogram
+beautifulsoup4
+lxml
