@@ -30,6 +30,51 @@ url_link_kirov = "http://us.gblnet.net/oper/?core_section=task_list&filter_selec
                  "adr&address_unit_selector2%5b%5d=421&address_unit_selector2%5b%5d=426&address_unit_selector2%5b%5d=" \
                  "2264&address_unit_selector2%5b%5d=0"
 
+url_link_admiral = "http://us.gblnet.net/oper/?core_section=task_list&filter_selector0=task_state&task_state0_value=" \
+                   "1&filter_selector1=task_staff&employee_find_input=&employee_id1=877&filter_selector2=" \
+                   "adr&address_unit_selector2%5b%5d=421&address_unit_selector2%5b%5d=426&address_unit_selector" \
+                   "2%5b%5d=2261&address_unit_selector2%5b%5d=0"
+
+url_link_central = "http://us.gblnet.net/oper/?core_section=task_list&filter_selector0=task_state&task_state0_value=" \
+                 "1&filter_selector1=task_staff&employee_find_input=&employee_id1=877&filter_selector2=" \
+                 "adr&address_unit_selector2%5b%5d=421&address_unit_selector2%5b%5d=426&address_unit_selector" \
+                 "2%5b%5d=2276&address_unit_selector2%5b%5d=0"
+
+url_link_parf = "http://us.gblnet.net/oper/?core_section=task_list&filter_selector0=task_state&task_state0_value=" \
+                "1&filter_selector1=task_staff&employee_find_input=&employee_id1=877&filter_selector2=" \
+                "adr&address_unit_selector2%5b%5d=421&address_unit_selector2%5b%5d=426&address_unit_selector2%5b%5d=" \
+                "2261&address_unit_selector2%5b%5d=829&address_unit_selector2%5b%5d=0"
+
+url_link_izmail = "http://us.gblnet.net/oper/?core_section=task_list&filter_selector0=task_state&task_state0_value=" \
+                  "1&filter_selector1=task_staff&employee_find_input=&employee_id1=877&filter_selector2=" \
+                  "adr&address_unit_selector2%5b%5d=421&address_unit_selector2%5b%5d=426&address_unit_selector" \
+                  "2%5b%5d=2261&address_unit_selector2%5b%5d=18125&address_unit_selector2%5b%5d=0"
+
+url_link_frunz = "http://us.gblnet.net/oper/?core_section=task_list&filter_selector0=task_state&task_state0_value=" \
+                 "1&filter_selector1=task_staff&employee_find_input=&employee_id1=877&filter_selector2=" \
+                 "adr&address_unit_selector2%5b%5d=421&address_unit_selector2%5b%5d=426&address_unit_selector2%5b%5d=" \
+                 "2275&address_unit_selector2%5b%5d=0"
+
+url_link_mitrof = "http://us.gblnet.net/oper/?core_section=task_list&filter_selector0=task_state&task_state0_value=" \
+                  "1&filter_selector1=task_staff&employee_find_input=&employee_id1=877&filter_selector2=" \
+                  "adr&address_unit_selector2%5B%5D=421&address_unit_selector2%5B%5D=426&address_unit_selector" \
+                  "2%5B%5D=2261&address_unit_selector2%5B%5D=3373&address_unit_selector2%5B%5D=0"
+
+url_link_moscow = "http://us.gblnet.net/oper/?core_section=task_list&filter_selector0=task_state&task_state0_value=" \
+                  "1&filter_selector1=task_staff&employee_find_input=&employee_id1=877&filter_selector2=" \
+                  "adr&address_unit_selector2%5b%5d=421&address_unit_selector2%5b%5d=426&address_unit_selector" \
+                  "2%5b%5d=2267&address_unit_selector2%5b%5d=0"
+
+url_link_petr = "http://us.gblnet.net/oper/?core_section=task_list&filter_selector0=task_state&task_state0_value=" \
+                "1&filter_selector1=task_staff&employee_find_input=&employee_id1=877&filter_selector2=" \
+                "adr&address_unit_selector2%5b%5d=421&address_unit_selector2%5b%5d=426&address_unit_selector" \
+                "2%5b%5d=2269&address_unit_selector2%5b%5d=0"
+
+url_link_vas = "http://us.gblnet.net/oper/?core_section=task_list&filter_selector0=task_state&task_state0_value=" \
+               "1&filter_selector1=task_staff&employee_find_input=&employee_id1=877&filter_selector2=" \
+               "adr&address_unit_selector2%5b%5d=421&address_unit_selector2%5b%5d=426&address_unit_selector" \
+               "2%5b%5d=3215&address_unit_selector2%5b%5d=0"
+
 HEADERS = {
     "main": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:105.0) Gecko/20100101 Firefox/105.0"
 }
@@ -45,14 +90,36 @@ response = session.post(url_login, data=data, headers=HEADERS).text
 @dp.message_handler()  # commands=['Кировский']
 async def echo_mess(message: types.Message):
     answer = []
-    if message.text == "1":
+    if message.text == "1" or message.text == "Кировский":
         await bot.send_message(message.chat.id, f"Ответ: Кировский")
-        # answer = parser.bot_start(url_link_kirov)
         answer = get_html(url_link_kirov)
-    elif message.text == "2":
-        await bot.send_message(message.chat.id, f"Ответ: Тоже кировский")
-        # answer = parser.bot_start(url_link_kirov)
-        answer = get_html(url_link_kirov)
+    elif message.text == "2" or message.text == "Адмирал":
+        await bot.send_message(message.chat.id, f"Ответ: Адмиралтейский")
+        answer = get_html(url_link_admiral)
+    elif message.text == "3" or message.text == "Центр":
+        await bot.send_message(message.chat.id, f"Ответ: Центральный")
+        answer = get_html(url_link_central)
+    elif message.text == "4" or message.text == "Парфеновская":
+        await bot.send_message(message.chat.id, f"Ответ: Парфеновская")
+        answer = get_html(url_link_parf)
+    elif message.text == "5" or message.text == "Измайловский":
+        await bot.send_message(message.chat.id, f"Ответ: Измайловский")
+        answer = get_html(url_link_izmail)
+    elif message.text == "6" or message.text == "Фрунзенский":
+        await bot.send_message(message.chat.id, f"Ответ: Фрунзенский")
+        answer = get_html(url_link_frunz)
+    elif message.text == "7" or message.text == "Малая":
+        await bot.send_message(message.chat.id, f"Ответ: Малая Митрофаньевская")
+        answer = get_html(url_link_mitrof)
+    elif message.text == "8" or message.text == "Московский":
+        await bot.send_message(message.chat.id, f"Ответ: Московский")
+        answer = get_html(url_link_moscow)
+    elif message.text == "9" or message.text == "Петроградка":
+        await bot.send_message(message.chat.id, f"Ответ: Петроградский")
+        answer = get_html(url_link_petr)
+    elif message.text == "10" or message.text == "Васька":
+        await bot.send_message(message.chat.id, f"Ответ: Василеостровский")
+        answer = get_html(url_link_vas)
 
     try:
         if len(answer) > 0:
