@@ -3,6 +3,7 @@ import os
 import time
 
 from aiogram import Bot, Dispatcher, executor, types
+from aiogram.dispatcher.filters import Text
 from aiogram.types import ReplyKeyboardRemove, \
     ReplyKeyboardMarkup, KeyboardButton, \
     InlineKeyboardMarkup, InlineKeyboardButton
@@ -20,6 +21,8 @@ session = requests.Session()
 bot = Bot(token=config.BOT_API_TOKEN)
 dp = Dispatcher(bot)
 
+answ = ()
+
 url_login = "http://us.gblnet.net/oper/"
 
 
@@ -33,6 +36,84 @@ data = {
     "password": config.pswUS
 }
 response = session.post(url_login, data=data, headers=HEADERS).text
+
+
+# Кнопка ссылка
+urlkb = InlineKeyboardMarkup(row_width=1)
+urlButton = InlineKeyboardButton(text='Кировский', callback_data="address_1")
+urlButton2 = InlineKeyboardButton(text='Адмиралтейский', callback_data="address_2")
+urlkb.add(urlButton, urlButton2)
+# buttons = [
+#     InlineKeyboardButton(text='Кировский', url='https://youtube.com'),
+#     InlineKeyboardButton(text='Адмиралтейский', url='https://youtube.com'),
+#     InlineKeyboardButton(text='Парфеновская', url='https://youtube.com'),
+#     InlineKeyboardButton(text='Измайловский', url='https://youtube.com'),
+#     InlineKeyboardButton(text='М.Митрофаньевская', url='https://youtube.com'),
+#     InlineKeyboardButton(text='Центральный', url='https://youtube.com'),
+# ]
+# urlkb.add().row(*buttons)
+
+
+@dp.callback_query_handler(Text(startswith="address_"))
+async def www_call(callback: types.CallbackQuery):
+    res = int(callback.data.split("_")[1])
+    print(res)
+    # bot.send_message(message.chat.id, f"Ответ: Центральный")
+    # if res == 1:
+    #     echo_mess_button(1)
+    # if f"{callback.from_user.id}" not in answ:
+    echo_mess_button(callback.from_user.id, res)
+    # await callback.answer()
+
+
+def echo_mess_button(message, num):
+    answer = []
+    if num == 1:
+        answer = get_html(url.url_link_kirov)
+    elif num == 2:
+        answer = get_html(url.url_link_admiral)
+    # elif message == "3" or message == "Центр":
+    #     await bot.send_message(message.chat.id, f"Ответ: Центральный")
+    #     answer = get_html(url.url_link_central)
+    # elif message == "4" or message == "Парфеновская":
+    #     await bot.send_message(message.chat.id, f"Ответ: Парфеновская")
+    #     answer = get_html(url.url_link_parf)
+    # elif message == "5" or message == "Измайловский":
+    #     await bot.send_message(message.chat.id, f"Ответ: Измайловский")
+    #     answer = get_html(url.url_link_izmail)
+    # elif message == "6" or message == "Фрунзенский":
+    #     await bot.send_message(message.chat.id, f"Ответ: Фрунзенский")
+    #     answer = get_html(url.url_link_frunz)
+    # elif message == "7" or message == "Малая":
+    #     await bot.send_message(message.chat.id, f"Ответ: Малая Митрофаньевская")
+    #     answer = get_html(url.url_link_mitrof)
+    # elif message == "8" or message == "Московский":
+    #     await bot.send_message(message.chat.id, f"Ответ: Московский")
+    #     answer = get_html(url.url_link_moscow)
+    # elif message == "9" or message == "Петроградка":
+    #     await bot.send_message(message.chat.id, f"Ответ: Петроградский")
+    #     answer = get_html(url.url_link_petr)
+    # elif message == "10" or message == "Васька":
+    #     await bot.send_message(message.chat.id, f"Ответ: Василеостровский")
+    #     answer = get_html(url.url_link_vas)
+    # else:
+    #     # await bot.send_message(message.chat.id, reply_markup=urlkb)
+    #     await message.answer("Ссылки", reply_markup=urlkb)
+
+    try:
+        if len(answer) > 0:
+            # await bot.send_message(message.chat.id, f"Ответ: {mes}")
+            for i in answer:
+                # await bot.send_message(message.chat.id, f"Ответ: {answer[x]}")
+                # await bot.send_message(message, i)
+                await bot.send_message(message.chat.id, i)
+                # send_telegram(mes[x])
+        else:
+            print(f"{datetime.now()}: Ремонтов нет")
+    except:
+        print(f"{datetime.now()}: Ошибка с получением ответа от парсера")
+        await bot.send_message(message.chat.id, f"Ответ: Ошибка с получением ответа от парсера")
+        # await bot.send_message(message, f"Ответ: Ошибка с получением ответа от парсера")
 
 
 @dp.message_handler()  # commands=['Кировский']
@@ -68,6 +149,9 @@ async def echo_mess(message: types.Message):
     elif message.text == "10" or message.text == "Васька":
         await bot.send_message(message.chat.id, f"Ответ: Василеостровский")
         answer = get_html(url.url_link_vas)
+    else:
+        # await bot.send_message(message.chat.id, reply_markup=urlkb)
+        await message.answer("Ссылки", reply_markup=urlkb)
 
     try:
         if len(answer) > 0:
