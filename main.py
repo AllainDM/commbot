@@ -38,40 +38,31 @@ data = {
 response = session.post(url_login, data=data, headers=HEADERS).text
 
 
-# Кнопка ссылка
-urlkb = InlineKeyboardMarkup(row_width=1)
-urlButton = InlineKeyboardButton(text='Кировский', callback_data="address_1")
-urlButton2 = InlineKeyboardButton(text='Адмиралтейский', callback_data="address_2")
-urlkb.add(urlButton, urlButton2)
-# buttons = [
-#     InlineKeyboardButton(text='Кировский', url='https://youtube.com'),
-#     InlineKeyboardButton(text='Адмиралтейский', url='https://youtube.com'),
-#     InlineKeyboardButton(text='Парфеновская', url='https://youtube.com'),
-#     InlineKeyboardButton(text='Измайловский', url='https://youtube.com'),
-#     InlineKeyboardButton(text='М.Митрофаньевская', url='https://youtube.com'),
-#     InlineKeyboardButton(text='Центральный', url='https://youtube.com'),
-# ]
-# urlkb.add().row(*buttons)
+# # Кнопка ссылка
+# urlkb = InlineKeyboardMarkup(row_width=1)
+# urlButton = InlineKeyboardButton(text='Кировский', callback_data="address_1")
+# urlButton2 = InlineKeyboardButton(text='Адмиралтейский', callback_data="address_2")
+# urlkb.add(urlButton, urlButton2)
 
 
-@dp.callback_query_handler(Text(startswith="address_"))
-async def www_call(callback: types.CallbackQuery):
-    res = int(callback.data.split("_")[1])
-    print(res)
-    # bot.send_message(message.chat.id, f"Ответ: Центральный")
-    # if res == 1:
-    #     echo_mess_button(1)
-    # if f"{callback.from_user.id}" not in answ:
-    echo_mess_button(callback.from_user.id, res)
-    # await callback.answer()
+# @dp.callback_query_handler(Text(startswith="address_"))
+# async def www_call(callback: types.CallbackQuery):
+#     res = int(callback.data.split("_")[1])
+#     print(res)
+#     # bot.send_message(message.chat.id, f"Ответ: Центральный")
+#     # if res == 1:
+#     #     echo_mess_button(1)
+#     # if f"{callback.from_user.id}" not in answ:
+#     echo_mess_button(callback.from_user.id, res)
+#     # await callback.answer()
 
 
-def echo_mess_button(message, num):
-    answer = []
-    if num == 1:
-        answer = get_html(url.url_link_kirov)
-    elif num == 2:
-        answer = get_html(url.url_link_admiral)
+# def echo_mess_button(message, num):
+#     answer = []
+#     if num == 1:
+#         answer = get_html(url.url_link_kirov)
+#     elif num == 2:
+#         answer = get_html(url.url_link_admiral)
     # elif message == "3" or message == "Центр":
     #     await bot.send_message(message.chat.id, f"Ответ: Центральный")
     #     answer = get_html(url.url_link_central)
@@ -100,20 +91,20 @@ def echo_mess_button(message, num):
     #     # await bot.send_message(message.chat.id, reply_markup=urlkb)
     #     await message.answer("Ссылки", reply_markup=urlkb)
 
-    try:
-        if len(answer) > 0:
-            # await bot.send_message(message.chat.id, f"Ответ: {mes}")
-            for i in answer:
-                # await bot.send_message(message.chat.id, f"Ответ: {answer[x]}")
-                # await bot.send_message(message, i)
-                await bot.send_message(message.chat.id, i)
-                # send_telegram(mes[x])
-        else:
-            print(f"{datetime.now()}: Ремонтов нет")
-    except:
-        print(f"{datetime.now()}: Ошибка с получением ответа от парсера")
-        await bot.send_message(message.chat.id, f"Ответ: Ошибка с получением ответа от парсера")
-        # await bot.send_message(message, f"Ответ: Ошибка с получением ответа от парсера")
+    # try:
+    #     if len(answer) > 0:
+    #         # await bot.send_message(message.chat.id, f"Ответ: {mes}")
+    #         for i in answer:
+    #             # await bot.send_message(message.chat.id, f"Ответ: {answer[x]}")
+    #             # await bot.send_message(message, i)
+    #             await bot.send_message(message.chat.id, i)
+    #             # send_telegram(mes[x])
+    #     else:
+    #         print(f"{datetime.now()}: Ремонтов нет")
+    # except:
+    #     print(f"{datetime.now()}: Ошибка с получением ответа от парсера")
+    #     await bot.send_message(message.chat.id, f"Ответ: Ошибка с получением ответа от парсера")
+    #     # await bot.send_message(message, f"Ответ: Ошибка с получением ответа от парсера")
 
 
 @dp.message_handler()  # commands=['Кировский']
@@ -150,8 +141,11 @@ async def echo_mess(message: types.Message):
         await bot.send_message(message.chat.id, f"Ответ: Василеостровский")
         answer = get_html(url.url_link_vas)
     else:
+        help = "1: Кировский, 2: Адмирал, 3: Центр, 4: Парфеновская, 5: Измайловский, 6: Фрунзенский, 7: Малая М, " \
+               "8: Московский, 9: Петроградка, 10: Васька"
+        await bot.send_message(message.chat.id, f"Подсказка: {help}")
         # await bot.send_message(message.chat.id, reply_markup=urlkb)
-        await message.answer("Ссылки", reply_markup=urlkb)
+        # await message.answer("Ссылки", reply_markup=urlkb)
 
     try:
         if len(answer) > 0:
