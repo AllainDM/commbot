@@ -140,6 +140,16 @@ async def echo_mess(message: types.Message):
     elif message.text == "10" or message.text == "Васька":
         await bot.send_message(message.chat.id, f"Ответ: Василеостровский")
         answer = get_html(url.url_link_vas)
+    elif message.text == "11" or message.text == "Мой":
+        await bot.send_message(message.chat.id, f"Ответ: Старый Адмирал")
+        # Запустим функцию отсортируюущие не нужные мне улицы
+        pre_answer = get_html(url.url_link_admiral)
+        answer = get_old_admiral(pre_answer)
+    elif message.text == "12" or message.text == "Мой2":
+        await bot.send_message(message.chat.id, f"Ответ: Тестовый Кировский")
+        # Запустим функцию отсортируюущие не нужные мне улицы
+        pre_answer = get_html(url.url_link_kirov)
+        answer = get_old_admiral(pre_answer)
     else:
         help = "1: Кировский, 2: Адмирал, 3: Центр, 4: Парфеновская, 5: Измайловский, 6: Фрунзенский, 7: Малая М, " \
                "8: Московский, 9: Петроградка, 10: Васька"
@@ -164,6 +174,22 @@ async def echo_mess(message: types.Message):
     # await message.reply(message.text)  # Ответ с цитатой пользователя
     # В этом варианте сообщение приходит пользователю, если он ранее писал боту, иначе ошибка
     # await bot.send_message(message.chat.id, f"Ответ: НЕТ")
+
+
+def get_old_admiral(all_answer):
+    answer = []
+    print("start")
+    for i in all_answer:
+        if i.find("Парфеновская") != -1:
+            print("Двинская")
+        elif i.find("Измайловский") != -1:
+            print("Канонерский")
+        else:
+            answer.append(i)
+    print(len(answer))
+    answer.append(f"Всего ремонтов в выбранном районе: {len(answer)}")
+        # return all_answer
+    return answer
 
 
 def get_html(url2):
@@ -210,7 +236,7 @@ def get_html(url2):
                 # Тестируем добавление всех комментариев
                 user_comm = url.url_link_comment + one_repair_id
                 one_comment = get_one_comment(user_comm)
-                print(one_comment)
+                # print(one_comment)
 
                 one_repair_text = f"{mission_repair.text}\n\n{address_repair_text}\n\n" \
                                   f"{comment_repair}\n\n{repair_link}\n\n{one_comment}"
@@ -223,7 +249,7 @@ def get_html(url2):
 
         answer.reverse()
 
-        print(list_repairs_id)
+        # print(list_repairs_id)
         return answer
         # return "ok"
     else:
@@ -237,7 +263,7 @@ def get_one_comment(url1):
         soup = BeautifulSoup(html.text, 'lxml')
         soup = soup.get_text()
         soup = soup.strip()
-        print(soup)
+        # print(soup)
         return soup
     return "no comment"
 
