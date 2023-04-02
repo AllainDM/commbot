@@ -55,5 +55,7 @@ url_link_vas = "http://us.gblnet.net/oper/?core_section=task_list&filter_selecto
                "adr&address_unit_selector2%5b%5d=421&address_unit_selector2%5b%5d=426&address_unit_selector" \
                "2%5b%5d=3215&address_unit_selector2%5b%5d=0"
 
-url_link_my = "http://us.gblnet.ru/oper/?core_section=task_list&filter_selector0=task_staff_wo_division&employee_id0=" \
-              "877&filter_selector1=task_state&task_state1_value=1"
+url_link_my = "http://us.gblnet.net/oper/?core_section=task_list&filter_selector0=task_staff_wo_division&employee_id0=877&filter_selector1=task_state&task_state1_value=1"
+
+url_link_vas_petr = "http://us.gblnet.net/oper/?core_section=task_list&filter_selector0=task_staff_wo_division&employee_id0=877&filter_selector1=task_state&task_state1_value=1"
+

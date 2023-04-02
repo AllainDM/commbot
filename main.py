@@ -153,8 +153,11 @@ async def echo_mess(message: types.Message):
     elif message.text == "13" or message.text == "мои":
         await bot.send_message(message.chat.id, f"Ответ: Выставленные на меня")
         # Запустим функцию отсортируюущие не нужные мне улицы
-        pre_answer = get_html(url.url_link_my)
-        answer = get_html(pre_answer)
+        answer = get_html(url.url_link_my)
+    elif message.text == "14" or message.text == "гончар":
+        await bot.send_message(message.chat.id, f"Ответ: Гончар")
+        # Запустим функцию отсортируюущие не нужные мне улицы
+        answer = get_html(url.url_link_vas_petr)
     else:
         help = "1: Кировский, 2: Адмирал, 3: Центр, 4: Парфеновская, 5: Измайловский, 6: Фрунзенский, 7: Малая М, " \
                "8: Московский, 9: Петроградка, 10: Васька"
