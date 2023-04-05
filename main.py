@@ -8,12 +8,15 @@ from aiogram.types import ReplyKeyboardRemove, \
     ReplyKeyboardMarkup, KeyboardButton, \
     InlineKeyboardMarkup, InlineKeyboardButton
 import requests
+import xlrd
+import xlwt
 
 from bs4 import BeautifulSoup
 
 import parser
 import config
 import url
+import exel as ex
 
 
 session = requests.Session()
@@ -111,6 +114,8 @@ response = session.post(url_login, data=data, headers=HEADERS).text
 async def echo_mess(message: types.Message):
     answer = []
     if message.text == "1" or message.text == "Кировский":
+        exel = open("example.xls", "rb")
+        await bot.send_document(message.chat.id, exel)
         await bot.send_message(message.chat.id, f"Ответ: Кировский")
         answer = get_html(url.url_link_kirov)
     elif message.text == "2" or message.text == "Адмирал":
@@ -275,6 +280,32 @@ def get_one_comment(url1):
         return soup
     return "no comment"
 
+
+def test_save():
+    font0 = xlwt.Font()
+    font0.name = 'Times New Roman'
+    font0.colour_index = 2
+    font0.bold = True
+
+    style0 = xlwt.XFStyle()
+    style0.font = font0
+
+    style1 = xlwt.XFStyle()
+    style1.num_format_str = 'D-MMM-YY'
+
+    wb = xlwt.Workbook()
+    ws = wb.add_sheet('A Test Sheet')
+
+    ws.write(0, 0, 'Test', style0)
+    ws.write(1, 0, datetime.now(), style1)
+    ws.write(2, 0, 1)
+    ws.write(2, 1, 1)
+    ws.write(2, 2, xlwt.Formula("A3+B3"))
+
+    wb.save('example.xls')
+
+
+test_save()
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
