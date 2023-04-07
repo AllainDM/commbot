@@ -41,81 +41,10 @@ data = {
 response = session.post(url_login, data=data, headers=HEADERS).text
 
 
-# # Кнопка ссылка
-# urlkb = InlineKeyboardMarkup(row_width=1)
-# urlButton = InlineKeyboardButton(text='Кировский', callback_data="address_1")
-# urlButton2 = InlineKeyboardButton(text='Адмиралтейский', callback_data="address_2")
-# urlkb.add(urlButton, urlButton2)
-
-
-# @dp.callback_query_handler(Text(startswith="address_"))
-# async def www_call(callback: types.CallbackQuery):
-#     res = int(callback.data.split("_")[1])
-#     print(res)
-#     # bot.send_message(message.chat.id, f"Ответ: Центральный")
-#     # if res == 1:
-#     #     echo_mess_button(1)
-#     # if f"{callback.from_user.id}" not in answ:
-#     echo_mess_button(callback.from_user.id, res)
-#     # await callback.answer()
-
-
-# def echo_mess_button(message, num):
-#     answer = []
-#     if num == 1:
-#         answer = get_html(url.url_link_kirov)
-#     elif num == 2:
-#         answer = get_html(url.url_link_admiral)
-    # elif message == "3" or message == "Центр":
-    #     await bot.send_message(message.chat.id, f"Ответ: Центральный")
-    #     answer = get_html(url.url_link_central)
-    # elif message == "4" or message == "Парфеновская":
-    #     await bot.send_message(message.chat.id, f"Ответ: Парфеновская")
-    #     answer = get_html(url.url_link_parf)
-    # elif message == "5" or message == "Измайловский":
-    #     await bot.send_message(message.chat.id, f"Ответ: Измайловский")
-    #     answer = get_html(url.url_link_izmail)
-    # elif message == "6" or message == "Фрунзенский":
-    #     await bot.send_message(message.chat.id, f"Ответ: Фрунзенский")
-    #     answer = get_html(url.url_link_frunz)
-    # elif message == "7" or message == "Малая":
-    #     await bot.send_message(message.chat.id, f"Ответ: Малая Митрофаньевская")
-    #     answer = get_html(url.url_link_mitrof)
-    # elif message == "8" or message == "Московский":
-    #     await bot.send_message(message.chat.id, f"Ответ: Московский")
-    #     answer = get_html(url.url_link_moscow)
-    # elif message == "9" or message == "Петроградка":
-    #     await bot.send_message(message.chat.id, f"Ответ: Петроградский")
-    #     answer = get_html(url.url_link_petr)
-    # elif message == "10" or message == "Васька":
-    #     await bot.send_message(message.chat.id, f"Ответ: Василеостровский")
-    #     answer = get_html(url.url_link_vas)
-    # else:
-    #     # await bot.send_message(message.chat.id, reply_markup=urlkb)
-    #     await message.answer("Ссылки", reply_markup=urlkb)
-
-    # try:
-    #     if len(answer) > 0:
-    #         # await bot.send_message(message.chat.id, f"Ответ: {mes}")
-    #         for i in answer:
-    #             # await bot.send_message(message.chat.id, f"Ответ: {answer[x]}")
-    #             # await bot.send_message(message, i)
-    #             await bot.send_message(message.chat.id, i)
-    #             # send_telegram(mes[x])
-    #     else:
-    #         print(f"{datetime.now()}: Ремонтов нет")
-    # except:
-    #     print(f"{datetime.now()}: Ошибка с получением ответа от парсера")
-    #     await bot.send_message(message.chat.id, f"Ответ: Ошибка с получением ответа от парсера")
-    #     # await bot.send_message(message, f"Ответ: Ошибка с получением ответа от парсера")
-
-
 @dp.message_handler()  # commands=['Кировский']
 async def echo_mess(message: types.Message):
     answer = []
     if message.text == "1" or message.text == "Кировский":
-        exel = open("example.xls", "rb")
-        await bot.send_document(message.chat.id, exel)
         await bot.send_message(message.chat.id, f"Ответ: Кировский")
         answer = get_html(url.url_link_kirov)
     elif message.text == "2" or message.text == "Адмирал":
@@ -163,6 +92,14 @@ async def echo_mess(message: types.Message):
         await bot.send_message(message.chat.id, f"Ответ: Гончар")
         # Запустим функцию отсортируюущие не нужные мне улицы
         answer = get_html(url.url_link_vas_petr)
+    elif message.text == "15" or message.text == "тест15":
+        await bot.send_message(message.chat.id, f"Ответ: тестим ексель")
+        exel = open("example.xls", "rb")
+        await bot.send_document(message.chat.id, exel)
+    elif message.text == "0" or message.text == "тест":
+        await bot.send_message(message.chat.id, f"Ответ: тестим ексель")
+        answer = get_html_users(url.url_link_test)
+        # answer2 = get_html_users(url.url_link_test2)
     else:
         help = "1: Кировский, 2: Адмирал, 3: Центр, 4: Парфеновская, 5: Измайловский, 6: Фрунзенский, 7: Малая М, " \
                "8: Московский, 9: Петроградка, 10: Васька"
@@ -269,6 +206,25 @@ def get_html(url2):
         print("error")
 
 
+def get_html_users(url3):
+    print(url3)
+    try:
+        html = session.get(url3)
+        answer = ["Больше ничего нету"]  # Ответ боту
+        list_users = []  # Тут храним что-то
+        if html.status_code == 200:
+            # soup = BeautifulSoup(html.text, 'lxml')
+            # table = soup.find_all('tr', class_="cursor_pointer")
+
+            # print(table)
+            return answer
+            # return "ok"
+        else:
+            print("error")
+    except requests.exceptions.TooManyRedirects as e:
+        print(f'{url3} : {e}')
+
+
 def get_one_comment(url1):
     html = session.get(url1)
     answer = ["test"]  # Ответ боту
@@ -281,23 +237,25 @@ def get_one_comment(url1):
     return "no comment"
 
 
-def test_save():
-    font0 = xlwt.Font()
-    font0.name = 'Times New Roman'
-    font0.colour_index = 2
-    font0.bold = True
+def test_save(table):
+    # font0 = xlwt.Font()
+    # font0.name = 'Times New Roman'
+    # font0.colour_index = 2
+    # font0.bold = True
 
-    style0 = xlwt.XFStyle()
-    style0.font = font0
+    # style0 = xlwt.XFStyle()
+    # style0.font = font0
 
-    style1 = xlwt.XFStyle()
-    style1.num_format_str = 'D-MMM-YY'
+    # style1 = xlwt.XFStyle()
+    # style1.num_format_str = 'D-MMM-YY'
 
     wb = xlwt.Workbook()
     ws = wb.add_sheet('A Test Sheet')
 
-    ws.write(0, 0, 'Test', style0)
-    ws.write(1, 0, datetime.now(), style1)
+    ws.write(0, 0, 'Test')
+    # ws.write(0, 0, 'Test', style0)
+    # ws.write(1, 0, datetime.now(), style1)
+    # ws.write(1, 0, datetime.now(), style1)
     ws.write(2, 0, 1)
     ws.write(2, 1, 1)
     ws.write(2, 2, xlwt.Formula("A3+B3"))
@@ -305,7 +263,7 @@ def test_save():
     wb.save('example.xls')
 
 
-test_save()
+# test_save()
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
