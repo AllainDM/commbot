@@ -160,3 +160,14 @@ if __name__ == '__main__':
     #     print(f"{datetime.now()}: Ошибка с получением ответа от парсера")
     #     await bot.send_message(message.chat.id, f"Ответ: Ошибка с получением ответа от парсера")
     #     # await bot.send_message(message, f"Ответ: Ошибка с получением ответа от парсера")
+
+# font0 = xlwt.Font()
+    # font0.name = 'Times New Roman'
+    # font0.colour_index = 2
+    # font0.bold = True
+
+    # style0 = xlwt.XFStyle()
+    # style0.font = font0
+
+    # style1 = xlwt.XFStyle()
+    # style1.num_format_str = 'D-MMM-YY'
