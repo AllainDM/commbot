@@ -2,3 +2,5 @@ requests
 aiogram
 beautifulsoup4
 lxml
+xlwt
+xlrd

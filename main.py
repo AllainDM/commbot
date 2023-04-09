@@ -113,9 +113,17 @@ async def echo_mess(message: types.Message):
         await bot.send_message(message.chat.id, f"Наши улицы в кировском районе: {kirov}")
         await bot.send_message(message.chat.id, f"И весь список в трех районах: {all_street}")
     elif message.text == "0" or message.text == "тест":
-        await bot.send_message(message.chat.id, f"Ответ: тестим ексель")
-        answer = get_html_users(url.url_link_test)
-        exel = open("example.xls", "rb")
+        print("Дата")
+        date_now = datetime.now()
+        start_day = date_now - timedelta(7)
+        date_now = date_now.strftime("%d.%m.%Y")
+        start_day = start_day.strftime("%d.%m.%Y")
+        name_table = f"{start_day} - {date_now}"
+        print(start_day)
+        print(date_now)
+        await bot.send_message(message.chat.id, f"Ответ: Отчет за {name_table}")
+        answer = get_html_users(url.url_link_test, date_now, start_day, name_table)
+        exel = open(f"{name_table}.xls", "rb")
         await bot.send_document(message.chat.id, exel)
         # answer2 = get_html_users(url.url_link_test2)
     else:
@@ -221,18 +229,9 @@ def get_html(url2):
         print("error")
 
 
-def get_html_users(url3, date=15):
-    if date:
-        pass
-    print("Дата")
-    # date_now = datetime.strftime(datetime.now(), "%d.%m.%Y")
-    date_now = datetime.now()
-    start_day = date_now - timedelta(6)
-    date_now = date_now.strftime("%d.%m.%Y")
-    start_day = start_day.strftime("%d.%m.%Y")
-    # print(date_now)
-    # print(start_day)
-
+def get_html_users(url3, date_now, start_day, name_table):
+    # if date:
+    #     pass
     url_link_test = f"http://us.gblnet.net/oper/?core_section=customer_list&filter_selector0=adr&" \
                     f"address_unit_selector0%5B%5D=421&address_unit_selector0%5B%5D=426&" \
                     f"address_unit_selector0%5B%5D=2267&address_unit_selector0%5B%5D=0&" \
@@ -259,7 +258,7 @@ def get_html_users(url3, date=15):
         if html.status_code == 200:
             soup = BeautifulSoup(html.text, 'lxml')
             table = soup.find_all('tr', class_="cursor_pointer")
-            test_save(table)
+            test_save(table, name_table)
             # print(table[0].text)
             # print(type(table[0].text))
             return answer
@@ -280,7 +279,7 @@ def get_one_comment(url1):
     return "no comment"
 
 
-def test_save(table):
+def test_save(table, name_table):
     # table = table.reverse()
     # Для разворота можно все сделать в виде списка внутри списка, который и развернуть
     table_list_et = []  # Список для Е телекома
@@ -288,7 +287,7 @@ def test_save(table):
     table_list_at_home = []  # Список для ЭтХоума
     # pact = ''  # Номер договора, объявим заранее для видимости
     wb = xlwt.Workbook()
-    ws = wb.add_sheet('A Test Sheet')
+    ws = wb.add_sheet(f'{name_table}')
     num_string = 1  # Стартовый номер строки для екселя
     prev_date = "0"
     for i in table:
@@ -316,7 +315,7 @@ def test_save(table):
         date = td_class_div_center[-1].text
         date = date.split()
         if not date:
-            print(pact)
+            # print(pact)
             if pact[0:2] == "40":
                 # e_telecom = "Тиера"
                 brend = "Тиера"
@@ -474,7 +473,7 @@ def test_save(table):
 
     # ws.write(2, 2, xlwt.Formula("A3+B3"))
 
-    wb.save('example.xls')
+    wb.save(f'{name_table}.xls')
 
 
 # test_save()
