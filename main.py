@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 import time
 
@@ -43,6 +43,13 @@ response = session.post(url_login, data=data, headers=HEADERS).text
 # Наши улицы в "совместных" районах
 moscow = [" Смоленская ул.", " Киевская ул."]
 frunze = [" Тосина ул.", " Тамбовская ул."]
+kirov = [" Канонерский о-в", " Шотландская ул.", " Двинская ул.", " Оборонная ул.",
+           " Севастопольская ул.", " Турбинная ул.", " Гладкова ул."]
+
+all_street = [" Канонерский о-в", " Шотландская ул.", " Двинская ул.", " Оборонная ул.",
+              " Севастопольская ул.", " Турбинная ул.", " Гладкова ул.",
+              " Тосина ул.", " Тамбовская ул.",
+              " Смоленская ул.", " Киевская ул."]
 
 
 @dp.message_handler()  # commands=['Кировский']
@@ -103,6 +110,8 @@ async def echo_mess(message: types.Message):
     elif message.text == "000" or message.text == "улицы":
         await bot.send_message(message.chat.id, f"Наши улицы в московском районе: {moscow}")
         await bot.send_message(message.chat.id, f"Наши улицы во фрунзенском районе: {frunze}")
+        await bot.send_message(message.chat.id, f"Наши улицы в кировском районе: {kirov}")
+        await bot.send_message(message.chat.id, f"И весь список в трех районах: {all_street}")
     elif message.text == "0" or message.text == "тест":
         await bot.send_message(message.chat.id, f"Ответ: тестим ексель")
         answer = get_html_users(url.url_link_test)
@@ -147,7 +156,6 @@ def get_old_admiral(all_answer):
             answer.append(i)
     print(len(answer))
     answer.append(f"Всего ремонтов в выбранном районе: {len(answer)}")
-        # return all_answer
     return answer
 
 
@@ -213,10 +221,39 @@ def get_html(url2):
         print("error")
 
 
-def get_html_users(url3):
-    print(url3)
+def get_html_users(url3, date=15):
+    if date:
+        pass
+    print("Дата")
+    # date_now = datetime.strftime(datetime.now(), "%d.%m.%Y")
+    date_now = datetime.now()
+    start_day = date_now - timedelta(6)
+    date_now = date_now.strftime("%d.%m.%Y")
+    start_day = start_day.strftime("%d.%m.%Y")
+    # print(date_now)
+    # print(start_day)
+
+    url_link_test = f"http://us.gblnet.net/oper/?core_section=customer_list&filter_selector0=adr&" \
+                    f"address_unit_selector0%5B%5D=421&address_unit_selector0%5B%5D=426&" \
+                    f"address_unit_selector0%5B%5D=2267&address_unit_selector0%5B%5D=0&" \
+                    f"filter_selector1=date_connect&date_connect1_value2=1&date_connect1_date1={start_day}&" \
+                    f"date_connect1_date2={date_now}&filter_selector2=adr&address_unit_selector2%5B%5D=421&" \
+                    f"address_unit_selector2%5B%5D=426&address_unit_selector2%5B%5D=2275&" \
+                    f"address_unit_selector2%5B%5D=0&filter_selector3=adr&address_unit_selector3%5B%5D=421&" \
+                    f"address_unit_selector3%5B%5D=426&address_unit_selector3%5B%5D=2261&" \
+                    f"address_unit_selector3%5B%5D=0&filter_selector4=adr&address_unit_selector4%5B%5D=421&" \
+                    f"address_unit_selector4%5B%5D=426&address_unit_selector4%5B%5D=2264&" \
+                    f"address_unit_selector4%5B%5D=0&filter_selector5=adr&address_unit_selector5%5B%5D=421&" \
+                    f"address_unit_selector5%5B%5D=426&address_unit_selector5%5B%5D=2276&" \
+                    f"address_unit_selector5%5B%5D=0&filter_selector6=adr&address_unit_selector6%5B%5D=421&" \
+                    f"address_unit_selector6%5B%5D=426&address_unit_selector6%5B%5D=2269&" \
+                    f"address_unit_selector6%5B%5D=0&filter_selector7=adr&address_unit_selector7%5B%5D=421&" \
+                    f"address_unit_selector7%5B%5D=426&address_unit_selector7%5B%5D=3215&" \
+                    f"address_unit_selector7%5B%5D=0&filter_group_by="
+
+    print(url_link_test)
     try:
-        html = session.get(url3)
+        html = session.get(url_link_test)
         answer = ["Больше ничего нету"]  # Ответ боту
         list_users = []  # Тут храним что-то
         if html.status_code == 200:
@@ -246,13 +283,20 @@ def get_one_comment(url1):
 def test_save(table):
     # table = table.reverse()
     # Для разворота можно все сделать в виде списка внутри списка, который и развернуть
-    table_list = []
+    table_list_et = []  # Список для Е телекома
+    table_list_tiera = []  # Список для Тиеры
+    table_list_at_home = []  # Список для ЭтХоума
+    # pact = ''  # Номер договора, объявим заранее для видимости
     wb = xlwt.Workbook()
     ws = wb.add_sheet('A Test Sheet')
     num_string = 1  # Стартовый номер строки для екселя
+    prev_date = "0"
     for i in table:
+        # e_telecom = "ЕТ"
+        brend = "ЕТ"
         one_list = []
-
+        one_list_tiera = []
+        one_list_at_home = []
         # Нужно найти элемент с фамилией мастера и номер договора.
         # 2: мастер, 3: номер договора
         td_class_all = i.find_all('td', class_="")
@@ -264,7 +308,7 @@ def test_save(table):
         # Без фамилии Тиера, а она нужна
         if not soname:
             soname = [" "]
-        print(soname[0])
+        # print(soname[0])
 
         # Тут должна быть дата
         td_class_div_center = i.find_all('td', class_="div_center")
@@ -272,59 +316,146 @@ def test_save(table):
         date = td_class_div_center[-1].text
         date = date.split()
         if not date:
-            continue
+            print(pact)
+            if pact[0:2] == "40":
+                # e_telecom = "Тиера"
+                brend = "Тиера"
+            else:
+                continue
         elif len(date[0]) == 10:
-            print(f'Длинна в норме {date}: {len(date[0])} ')
+            # print(f'Длинна в норме {date}: {len(date[0])} ')
+            pass
+        elif len(date[0]) == 17:
+            if date[0][0:2] == "12":
+                # e_telecom = "ЭтХоум"
+                pact = date[0][0:7]
+                date = date[0][7:]
+                brend = "ЭтХоум"
+            else:
+                continue
         else:
+            continue
+        if not date and soname == " ":
+            print("нет ни мастера ни даты")
             continue
 
         # В ссылках хранится адрес, ищем ссылки
         list_a = i.find_all('a')  # Ищем ссылки во всей таблице
         address = list_a[2].text
-        print(address)
+        # print(address)
         address = address.split(",")
-        print(address)
+        # print(address)
         # Отдельно надо разделить номер дома и квартиру
         # print(address)
         address_dom = address[4].split()
+        address_dom = address_dom[0]
+        if address_dom[-1].isdigit():
+            address_dom = address_dom.replace("/", "к")
+        else:
+            address_dom = address_dom.replace("/", "")
         # print(address_dom[0])
         address_kv = address[-1].split()
         # print(address_kv[-1])
 
         # Вычеркнем лишние улицы из "совместных" районов
         # Нужен хелп по улицам, ответ бота при запросе. Сделать улицы переменными, может в массиве
-        if " Московский р-н" in address:
-            for street in moscow:
+        street_is_norm = True
+        if " Московский р-н" in address or " Фрунзенский р-н" in address or " Кировский р-н" in address:
+            # print(f"Улица {address[3][0:-4]} находится в Московском или Фрунзенском районе")
+            for street in all_street:
+                # print(street)
+                # print(f"Проверяем улицу {street}")
                 if street in address:
-                    print(f"Улица {address[3][0:-4]} находится в Московском районе")
-                else:
+                    # print(f"Найдена улица {street}, она находится в Московском районе")
+                    street_is_norm = True
                     break
-        if " Фрунзенский р-н" in address:
-            for street in frunze:
-                if street in address:
-                    print(f"Улица {address[3][0:-4]} находится во Фрунзенском районе")
                 else:
-                    break
-        # else:
-        #     print(f"Улица {address[3][0:-4]} НЕ находится в Московском районе?")
+                    # print(f"Найденная улица {street}, НЕЕЕЕЕЕЕЕЕЕ находится в Московском районе")
+                    street_is_norm = False
+        if not street_is_norm:
+            continue
 
-        one_list.append("Бренд")  # Дата
-        one_list.append(date)  # Дата
-        one_list.append(address[3][0:-4])  # Улица
-        one_list.append(pact)   # Номер договора
-        one_list.append(address_dom[0])  # Дом
-        one_list.append(address_kv[-1])  # Квартира
-        one_list.append(soname[0])  # Мастер
-        one_list.append(address[2][0:-4])  # Район
+        if brend == "ЕТ":
+            one_list.append(brend)  # Бренд
+            one_list.append(date)  # Дата
+            one_list.append(pact)   # Номер договора
+            one_list.append(address[3][1:-4])  # Улица
+            one_list.append(address_dom)  # Дом
+            one_list.append(address_kv[-1])  # Квартира
+            one_list.append(soname[0])  # Мастер
+            one_list.append(address[2][1:-4])  # Район
 
-        table_list.append(one_list)
+            table_list_et.append(one_list)
+
+        elif brend == "Тиера":
+            one_list_tiera.append(brend)  # Бренд
+            one_list_tiera.append(date)  # Дата
+            one_list_tiera.append(pact)  # Номер договора
+            one_list_tiera.append(address[3][1:-4])  # Улица
+            one_list_tiera.append(address_dom)  # Дом
+            one_list_tiera.append(address_kv[-1])  # Квартира
+            one_list_tiera.append(soname[0])  # Мастер
+            one_list_tiera.append(address[2][1:-4])  # Район
+
+            table_list_tiera.append(one_list_tiera)
+
+        else:
+            one_list_at_home.append(brend)  # Бренд
+            one_list_at_home.append(date)  # Дата
+            one_list_at_home.append(pact)  # Номер договора
+            one_list_at_home.append(address[3][1:-4])  # Улица
+            one_list_at_home.append(address_dom)  # Дом
+            one_list_at_home.append(address_kv[-1])  # Квартира
+            one_list_at_home.append(soname[0])  # Мастер
+            one_list_at_home.append(address[2][1:-4])  # Район
+
+            table_list_at_home.append(one_list_at_home)
 
     # Пока не переворачиваем, чтоб удобнее сравнивать
-    # table_list.reverse()
-    for i in table_list:
+    table_list_et.reverse()
+    table_list_tiera.reverse()
+    table_list_at_home.reverse()
+    for i in table_list_et:
+        # Добавим дополнительный пробел если дата увеличилась
+        if prev_date != i[1]:
+            num_string += 1
+            prev_date = i[1]
+        ws.write(num_string, 0, i[0])  # Бренд
         ws.write(num_string, 1, i[1])  # Дата
         ws.write(num_string, 2, i[2])  # Номер договора
-        ws.write(num_string, 3, i[3])  # Улица 9
+        ws.write(num_string, 3, i[3])  # Улица
+        ws.write(num_string, 4, i[4])  # Дом
+        ws.write(num_string, 5, i[5])  # Квартира
+        ws.write(num_string, 6, i[6])  # Мастер
+        ws.write(num_string, 7, i[7])  # Район
+        num_string += 1
+
+    num_string += 1
+    for i in table_list_tiera:
+        # Добавим дополнительный пробел если дата увеличилась
+        if prev_date != i[1]:
+            num_string += 1
+            prev_date = i[1]
+        ws.write(num_string, 0, i[0])  # Бренд
+        ws.write(num_string, 1, i[1])  # Дата
+        ws.write(num_string, 2, i[2])  # Номер договора
+        ws.write(num_string, 3, i[3])  # Улица
+        ws.write(num_string, 4, i[4])  # Дом
+        ws.write(num_string, 5, i[5])  # Квартира
+        ws.write(num_string, 6, i[6])  # Мастер
+        ws.write(num_string, 7, i[7])  # Район
+        num_string += 1
+
+    num_string += 1
+    for i in table_list_at_home:
+        # Добавим дополнительный пробел если дата увеличилась
+        if prev_date != i[1]:
+            num_string += 1
+            prev_date = i[1]
+        ws.write(num_string, 0, i[0])  # Бренд
+        ws.write(num_string, 1, i[1])  # Дата
+        ws.write(num_string, 2, i[2])  # Номер договора
+        ws.write(num_string, 3, i[3])  # Улица
         ws.write(num_string, 4, i[4])  # Дом
         ws.write(num_string, 5, i[5])  # Квартира
         ws.write(num_string, 6, i[6])  # Мастер
