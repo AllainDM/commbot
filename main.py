@@ -128,7 +128,22 @@ async def echo_mess(message: types.Message):
             await bot.send_document(message.chat.id, exel)
         except:
             await bot.send_document(message.chat.id, "Возможно найденный файл не найден")
-        # answer2 = get_html_users(url.url_link_test2)
+    elif message.text == "00" or message.text == "тест00":  # Тут отчет за один день, предыдущий
+        print("Дата")
+        date_now = datetime.now()
+        start_day = date_now - timedelta(1)
+        date_now = start_day.strftime("%d.%m.%Y")
+        start_day = start_day.strftime("%d.%m.%Y")
+        name_table = f"{date_now}"
+        print(start_day)
+        print(date_now)
+        await bot.send_message(message.chat.id, f"Ответ: Отчет за {name_table}")
+        answer = get_html_users(url.url_link_test, date_now, start_day, name_table)
+        try:
+            exel = open(f"{name_table}.xls", "rb")
+            await bot.send_document(message.chat.id, exel)
+        except:
+            await bot.send_document(message.chat.id, "Возможно найденный файл не найден")
     else:
         help = "1: Кировский, 2: Адмирал, 3: Центр, 4: Парфеновская, 5: Измайловский, 6: Фрунзенский, 7: Малая М, " \
                "8: Московский, 9: Петроградка, 10: Васька"
@@ -465,16 +480,7 @@ def test_save(table, name_table):
         num_string += 1
 
     num_string += 3
-    ws.write(num_string, 0, "Версия 003")  # Район
-        # ws.write(num_string, 1, date)  # Дата 18
-        # # ws.write(num_string, 1, str[18])  # Дата 18
-        # # ws.write(num_string, 2, str[17])  # Номер договора 17
-        # ws.write(num_string, 3, address[3][0:-4])  # Улица 9
-        # ws.write(num_string, 4, address_dom[0])  # Дом 11
-        # ws.write(num_string, 5, address_kv[-1])  # Квартира 13
-        # # ws.write(num_string, 6, str[14])  # Мастер 14
-        # ws.write(num_string, 7, address[2][0:-4])  # Район 7
-        # num_string += 1
+    ws.write(num_string, 0, "Версия 004")
 
     # ws.write(2, 2, xlwt.Formula("A3+B3"))
 
