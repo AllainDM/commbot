@@ -250,7 +250,7 @@ def get_html(url2):
 def get_html_users(url3, date_now, start_day, name_table):
     # if date:
     #     pass
-    url_link_test = f"http://us.gblnet.net/oper/?core_section=customer_list&filter_selector0=adr&" \
+    url_link_test2 = f"http://us.gblnet.net/oper/?core_section=customer_list&filter_selector0=adr&" \
                     f"address_unit_selector0%5B%5D=421&address_unit_selector0%5B%5D=426&" \
                     f"address_unit_selector0%5B%5D=2267&address_unit_selector0%5B%5D=0&" \
                     f"filter_selector1=date_connect&date_connect1_value2=1&date_connect1_date1={start_day}&" \
@@ -268,6 +268,22 @@ def get_html_users(url3, date_now, start_day, name_table):
                     f"address_unit_selector7%5B%5D=426&address_unit_selector7%5B%5D=3215&" \
                     f"address_unit_selector7%5B%5D=0&filter_group_by="
 
+    url_link_test = f"http://us.gblnet.net/oper/?core_section=customer_list&filter_selector0=adr&" \
+                    f"address_unit_selector0%5B%5D=421&address_unit_selector0%5B%5D=426&" \
+                    f"address_unit_selector0%5B%5D=2267&address_unit_selector0%5B%5D=0&filter_selector1=adr&" \
+                    f"address_unit_selector1%5B%5D=421&address_unit_selector1%5B%5D=426&" \
+                    f"address_unit_selector1%5B%5D=3215&address_unit_selector1%5B%5D=0&filter_selector2=adr&" \
+                    f"address_unit_selector2%5B%5D=421&address_unit_selector2%5B%5D=426&" \
+                    f"address_unit_selector2%5B%5D=2275&address_unit_selector2%5B%5D=0&filter_selector3=adr&" \
+                    f"address_unit_selector3%5B%5D=421&address_unit_selector3%5B%5D=426&" \
+                    f"address_unit_selector3%5B%5D=2261&address_unit_selector3%5B%5D=0&filter_selector4=adr&" \
+                    f"address_unit_selector4%5B%5D=421&address_unit_selector4%5B%5D=426&" \
+                    f"address_unit_selector4%5B%5D=2264&address_unit_selector4%5B%5D=0&filter_selector5=adr&" \
+                    f"address_unit_selector5%5B%5D=421&address_unit_selector5%5B%5D=426&" \
+                    f"address_unit_selector5%5B%5D=2276&address_unit_selector5%5B%5D=0&filter_selector6=adr&" \
+                    f"address_unit_selector6%5B%5D=421&address_unit_selector6%5B%5D=426&" \
+                    f"address_unit_selector6%5B%5D=2269&address_unit_selector6%5B%5D=0&filter_selector7=date_add&" \
+                    f"date_add7_value2=1&date_add7_date1={start_day}&date_add7_date2={date_now}&filter_group_by="
     print(url_link_test)
     try:
         html = session.get(url_link_test)
@@ -480,7 +496,7 @@ def test_save(table, name_table):
         num_string += 1
 
     num_string += 3
-    ws.write(num_string, 0, "Версия 004")
+    ws.write(num_string, 0, "Версия 006")
 
     # ws.write(2, 2, xlwt.Formula("A3+B3"))
 
