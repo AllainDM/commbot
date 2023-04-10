@@ -380,7 +380,7 @@ def test_save(table, name_table):
         if brend == "ЕТ":
             one_list.append(brend)  # Бренд
             one_list.append(date)  # Дата
-            one_list.append(pact)   # Номер договора
+            one_list.append(pact.rstrip())   # Номер договора
             one_list.append(address[3][1:-4])  # Улица
             one_list.append(address_dom)  # Дом
             one_list.append(address_kv[-1])  # Квартира
@@ -464,6 +464,8 @@ def test_save(table, name_table):
         ws.write(num_string, 7, i[7])  # Район
         num_string += 1
 
+    num_string += 3
+    ws.write(num_string, 0, "Версия 003")  # Район
         # ws.write(num_string, 1, date)  # Дата 18
         # # ws.write(num_string, 1, str[18])  # Дата 18
         # # ws.write(num_string, 2, str[17])  # Номер договора 17
