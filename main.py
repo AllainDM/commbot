@@ -123,8 +123,11 @@ async def echo_mess(message: types.Message):
         print(date_now)
         await bot.send_message(message.chat.id, f"Ответ: Отчет за {name_table}")
         answer = get_html_users(url.url_link_test, date_now, start_day, name_table)
-        exel = open(f"{name_table}.xls", "rb")
-        await bot.send_document(message.chat.id, exel)
+        try:
+            exel = open(f"{name_table}.xls", "rb")
+            await bot.send_document(message.chat.id, exel)
+        except:
+            await bot.send_document(message.chat.id, "Возможно найденный файл не найден")
         # answer2 = get_html_users(url.url_link_test2)
     else:
         help = "1: Кировский, 2: Адмирал, 3: Центр, 4: Парфеновская, 5: Измайловский, 6: Фрунзенский, 7: Малая М, " \
