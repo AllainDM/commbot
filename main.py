@@ -128,13 +128,88 @@ async def echo_mess(message: types.Message):
             await bot.send_document(message.chat.id, exel)
         except:
             await bot.send_document(message.chat.id, "Возможно найденный файл не найден")
-    elif message.text == "00" or message.text == "тест00":  # Тут отчет за один день, предыдущий
+    elif message.text == "00" or message.text == "вчера":  # Тут отчет за один день, предыдущий
         print("Дата")
         date_now = datetime.now()
         start_day = date_now - timedelta(1)
         date_now = start_day.strftime("%d.%m.%Y")
         start_day = start_day.strftime("%d.%m.%Y")
         name_table = f"{date_now}"
+        print(start_day)
+        print(date_now)
+        await bot.send_message(message.chat.id, f"Ответ: Отчет за {name_table}")
+        answer = get_html_users(url.url_link_test, date_now, start_day, name_table)
+        try:
+            exel = open(f"{name_table}.xls", "rb")
+            await bot.send_document(message.chat.id, exel)
+        except:
+            await bot.send_document(message.chat.id, "Возможно найденный файл не найден")
+    elif message.text == "00+1" or message.text == "сегодня":  # Тут отчет за один день, предыдущий
+        print("Дата")
+        date_now = datetime.now()
+        date_now = date_now.strftime("%d.%m.%Y")
+        start_day = date_now
+        name_table = f"{date_now}"
+        print(start_day)
+        print(date_now)
+        await bot.send_message(message.chat.id, f"Ответ: Отчет за {name_table}")
+        answer = get_html_users(url.url_link_test, date_now, start_day, name_table)
+        try:
+            exel = open(f"{name_table}.xls", "rb")
+            await bot.send_document(message.chat.id, exel)
+        except:
+            await bot.send_document(message.chat.id, "Возможно найденный файл не найден")
+    elif message.text == "001" or message.text == "неделя1":  # Тут отчет за месяц, с первого по текущее число
+        print("Дата")
+        now = datetime.now()
+        start_day = f"01.{now.month}.{now.year}"
+        date_now = f"07.{now.month}.{now.year}"
+        name_table = f"{start_day} - {date_now}"
+        print(start_day)
+        print(date_now)
+        await bot.send_message(message.chat.id, f"Ответ: Отчет за {name_table}")
+        answer = get_html_users(url.url_link_test, date_now, start_day, name_table)
+        try:
+            exel = open(f"{name_table}.xls", "rb")
+            await bot.send_document(message.chat.id, exel)
+        except:
+            await bot.send_document(message.chat.id, "Возможно найденный файл не найден")
+    elif message.text == "002" or message.text == "неделя2":  # Тут отчет за месяц, с первого по текущее число
+        print("Дата")
+        now = datetime.now()
+        start_day = f"08.{now.month}.{now.year}"
+        date_now = f"15.{now.month}.{now.year}"
+        name_table = f"{start_day} - {date_now}"
+        print(start_day)
+        print(date_now)
+        await bot.send_message(message.chat.id, f"Ответ: Отчет за {name_table}")
+        answer = get_html_users(url.url_link_test, date_now, start_day, name_table)
+        try:
+            exel = open(f"{name_table}.xls", "rb")
+            await bot.send_document(message.chat.id, exel)
+        except:
+            await bot.send_document(message.chat.id, "Возможно найденный файл не найден")
+    elif message.text == "003" or message.text == "неделя3":  # Тут отчет за месяц, с первого по текущее число
+        print("Дата")
+        now = datetime.now()
+        start_day = f"16.{now.month}.{now.year}"
+        date_now = f"23.{now.month}.{now.year}"
+        name_table = f"{start_day} - {date_now}"
+        print(start_day)
+        print(date_now)
+        await bot.send_message(message.chat.id, f"Ответ: Отчет за {name_table}")
+        answer = get_html_users(url.url_link_test, date_now, start_day, name_table)
+        try:
+            exel = open(f"{name_table}.xls", "rb")
+            await bot.send_document(message.chat.id, exel)
+        except:
+            await bot.send_document(message.chat.id, "Возможно найденный файл не найден")
+    elif message.text == "004" or message.text == "неделя4":  # Тут отчет за месяц, с первого по текущее число
+        print("Дата")
+        now = datetime.now()
+        start_day = f"24.{now.month}.{now.year}"
+        date_now = f"31.{now.month}.{now.year}"
+        name_table = f"{start_day} - {date_now}"
         print(start_day)
         print(date_now)
         await bot.send_message(message.chat.id, f"Ответ: Отчет за {name_table}")
@@ -423,7 +498,7 @@ def test_save(table, name_table):
         elif brend == "Тиера":
             one_list_tiera.append(brend)  # Бренд
             one_list_tiera.append(date)  # Дата
-            one_list_tiera.append(pact)  # Номер договора
+            one_list_tiera.append(pact.rstrip())  # Номер договора
             one_list_tiera.append(address[3][1:-4])  # Улица
             one_list_tiera.append(address_dom)  # Дом
             one_list_tiera.append(address_kv[-1])  # Квартира
@@ -432,7 +507,7 @@ def test_save(table, name_table):
 
             table_list_tiera.append(one_list_tiera)
 
-        else:
+        else:  # Остальное видимо относится к ЭтХоуму
             one_list_at_home.append(brend)  # Бренд
             one_list_at_home.append(date)  # Дата
             one_list_at_home.append(pact)  # Номер договора
@@ -496,7 +571,7 @@ def test_save(table, name_table):
         num_string += 1
 
     num_string += 3
-    ws.write(num_string, 0, "Версия 006")
+    ws.write(num_string, 0, "Версия 009")
 
     # ws.write(2, 2, xlwt.Formula("A3+B3"))
 
