@@ -120,9 +120,11 @@ def get_old_admiral(all_answer):
     print("start")
     for i in all_answer:
         if i.find("Парфеновская") != -1:
-            print("Двинская")
+            print("Парфеновская")
         elif i.find("Измайловский") != -1:
-            print("Канонерский")
+            print("Измайловский")
+        elif i.find("Малая Митрофаньевская") != -1:
+            print("Малая Митрофаньевская")
         else:
             answer.append(i)
     print(len(answer))
