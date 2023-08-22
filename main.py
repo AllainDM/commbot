@@ -148,36 +148,62 @@ def get_html(url2):
             for one_repair_id in list_repairs_id:
                 # Собираем ссылку на сам ремонт
                 repair_link = url.url_link_repair + one_repair_id
+                repair_link = repair_link.strip()
                 td_class_all = table[x].find_all('td', class_="")
                 # print(td_class_all)
                 td_class_div_center_all = table[x].find_all('td', class_="div_center")
+                # TODO необходимо вставить дату и время принятия
                 data_repair = td_class_div_center_all[1]  # Пока не используем
                 # print(f"""data_repair_all: {data_repair}""")
                 # print(f"""data_repair: {data_repair}""")
 
                 address_repair = td_class_all[0]
                 address_repair_text = address_repair.text.strip()
+                address_split = address_repair_text.split(" ")
+                # Сделаем срез уберем страну и город
+                address_split = address_split[2:]
+                address_msg = ""
+                # for num, value in enumerate(address_split):
+                for i in address_split:
+                    if i != '':
+                        address_msg += i
+                        address_msg += " "
+                    else:
+                        break
+
                 # print(f"""address_repair: {address_repair.text}""")
+                print(f"""address_repair: {address_msg}""")
                 # print(f"""address_repair: {address_repair}""")
 
                 mission_repair = td_class_all[1].b
-                # print(f"""mission_repair: {mission_repair.text}""")
+                print(f"""mission_repair: {mission_repair.text}""")
 
-                comment_repair = table[x].find_all('div', class_="div_journal_opis")
-                # print(comment_repair)
+                # comment_repair = table[x].find_all('div', class_="div_journal_opis")
+                comment_repair = td_class_all[1]
+                print(f"comment_repair: {comment_repair.text}")
                 # Комментария может не быть, поэтому делаем проверку
-                if len(comment_repair) > 0:
-                    comment_repair = comment_repair[0].text
-                else:  # Если коммента нет создаем пустую строку
-                    comment_repair = " "
+                # Старый вариант, до обновления Юзера
+                # if len(comment_repair) > 0:
+                #     comment_repair = comment_repair[0].text
+                # else:  # Если коммента нет создаем пустую строку
+                #     comment_repair = " "
+                try:
+                    # comment_repair = comment_repair.split("<br/>")
+                    # comment_repair = comment_repair.get_text('/n', strip="True")
+                    description = comment_repair.text
+                    print(f"""description232: {comment_repair.text}""")
+                except AttributeError:
+                    description = "Описания нет"
+
+                print(f"""description123: {description}""")
 
                 # Тестируем добавление всех комментариев
                 user_comm = url.url_link_comment + one_repair_id
                 one_comment = get_one_comment(user_comm)
                 # print(one_comment)
 
-                one_repair_text = f"{mission_repair.text}\n\n{address_repair_text}\n\n" \
-                                  f"{comment_repair}\n\n{repair_link}\n\n{one_comment}"
+                one_repair_text = f"{mission_repair.text}\n\n{address_msg}\n\n" \
+                                  f"{description}\n\n{repair_link}\n\n{one_comment}"
 
                 answer.append(one_repair_text)
 
