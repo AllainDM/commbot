@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import time
 
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters import Text
@@ -33,6 +34,20 @@ data = {
     "password": config.pswUS
 }
 response = session.post(url_login, data=data, headers=HEADERS).text
+
+
+def create_sessions():
+    global data
+    global response
+    # По бесконечному циклу запустим создание сессий
+    while True:
+        try:
+            response = session.post(url_login, data=data, headers=HEADERS).text
+            print("Сессия Юзера создана 2")
+            break
+        except ConnectionError:
+            print("Ошибка создания сессии")
+            time.sleep(60)
 
 
 @dp.message_handler()
@@ -133,91 +148,97 @@ def get_old_admiral(all_answer):
 
 
 def get_html(url2):
-    html = session.get(url2)
-    answer = ["Больше ничего нету"]  # Ответ боту
-    list_repairs_id = []  # Тут храним ИД ремонтов
-    if html.status_code == 200:
-        soup = BeautifulSoup(html.text, 'lxml')
-        table = soup.find_all('tr', class_="cursor_pointer")
-        for i in table:  # Цикл по списку всей таблицы
-            list_a = i.find_all('a')  # Ищем ссылки во всей таблице
-            for ii in list_a:  # Цикл по найденным ссылкам
-                if len(ii.text) == 6 or len(ii.text) == 7:  # Ищем похожесть на ид ремонта, он пока из 6 цифр
-                    list_repairs_id.append(ii.text)
-        # Перебор полученного списка ремонтов
-        if len(list_repairs_id) > 0:
-            x = 0  # Счетчик индексов новых ремонтов
-            for one_repair_id in list_repairs_id:
-                # Собираем ссылку на сам ремонт
-                repair_link = url.url_link_repair + one_repair_id
-                repair_link = repair_link.strip()
-                td_class_all = table[x].find_all('td', class_="")
-                # print(td_class_all)
-                td_class_div_center_all = table[x].find_all('td', class_="div_center")
-                # TODO необходимо вставить дату и время принятия
-                data_repair = td_class_div_center_all[1]  # Пока не используем
-                # print(f"""data_repair_all: {data_repair}""")
-                # print(f"""data_repair: {data_repair}""")
+    try:
+        html = session.get(url2)
+        answer = ["Больше ничего нету"]  # Ответ боту
+        list_repairs_id = []  # Тут храним ИД ремонтов
+        if html.status_code == 200:
+            soup = BeautifulSoup(html.text, 'lxml')
+            table = soup.find_all('tr', class_="cursor_pointer")
+            for i in table:  # Цикл по списку всей таблицы
+                list_a = i.find_all('a')  # Ищем ссылки во всей таблице
+                for ii in list_a:  # Цикл по найденным ссылкам
+                    if len(ii.text) == 6 or len(ii.text) == 7:  # Ищем похожесть на ид ремонта, он пока из 6 цифр
+                        list_repairs_id.append(ii.text)
+            # Перебор полученного списка ремонтов
+            if len(list_repairs_id) > 0:
+                x = 0  # Счетчик индексов новых ремонтов
+                for one_repair_id in list_repairs_id:
+                    # Собираем ссылку на сам ремонт
+                    repair_link = url.url_link_repair + one_repair_id
+                    repair_link = repair_link.strip()
+                    td_class_all = table[x].find_all('td', class_="")
+                    # print(td_class_all)
+                    td_class_div_center_all = table[x].find_all('td', class_="div_center")
+                    # TODO необходимо вставить дату и время принятия
+                    data_repair = td_class_div_center_all[1]  # Пока не используем
+                    # print(f"""data_repair_all: {data_repair}""")
+                    # print(f"""data_repair: {data_repair}""")
 
-                address_repair = td_class_all[0]
-                address_repair_text = address_repair.text.strip()
-                address_split = address_repair_text.split(" ")
-                # Сделаем срез уберем страну и город
-                address_split = address_split[2:]
-                address_msg = ""
-                # for num, value in enumerate(address_split):
-                for i in address_split:
-                    if i != '':
-                        address_msg += i
-                        address_msg += " "
-                    else:
-                        break
+                    address_repair = td_class_all[0]
+                    address_repair_text = address_repair.text.strip()
+                    address_split = address_repair_text.split(" ")
+                    # Сделаем срез уберем страну и город
+                    address_split = address_split[2:]
+                    address_msg = ""
+                    # for num, value in enumerate(address_split):
+                    for i in address_split:
+                        if i != '':
+                            address_msg += i
+                            address_msg += " "
+                        else:
+                            break
 
-                # print(f"""address_repair: {address_repair.text}""")
-                print(f"""address_repair: {address_msg}""")
-                # print(f"""address_repair: {address_repair}""")
+                    # print(f"""address_repair: {address_repair.text}""")
+                    print(f"""address_repair: {address_msg}""")
+                    # print(f"""address_repair: {address_repair}""")
 
-                mission_repair = td_class_all[1].b
-                print(f"""mission_repair: {mission_repair.text}""")
+                    mission_repair = td_class_all[1].b
+                    print(f"""mission_repair: {mission_repair.text}""")
 
-                # comment_repair = table[x].find_all('div', class_="div_journal_opis")
-                comment_repair = td_class_all[1]
-                print(f"comment_repair: {comment_repair.text}")
-                # Комментария может не быть, поэтому делаем проверку
-                # Старый вариант, до обновления Юзера
-                # if len(comment_repair) > 0:
-                #     comment_repair = comment_repair[0].text
-                # else:  # Если коммента нет создаем пустую строку
-                #     comment_repair = " "
-                try:
-                    # comment_repair = comment_repair.split("<br/>")
-                    # comment_repair = comment_repair.get_text('/n', strip="True")
-                    description = comment_repair.text
-                    print(f"""description232: {comment_repair.text}""")
-                except AttributeError:
-                    description = "Описания нет"
+                    # comment_repair = table[x].find_all('div', class_="div_journal_opis")
+                    comment_repair = td_class_all[1]
+                    print(f"comment_repair: {comment_repair.text}")
+                    # Комментария может не быть, поэтому делаем проверку
+                    # Старый вариант, до обновления Юзера
+                    # if len(comment_repair) > 0:
+                    #     comment_repair = comment_repair[0].text
+                    # else:  # Если коммента нет создаем пустую строку
+                    #     comment_repair = " "
+                    try:
+                        # comment_repair = comment_repair.split("<br/>")
+                        # comment_repair = comment_repair.get_text('/n', strip="True")
+                        description = comment_repair.text
+                        print(f"""description232: {comment_repair.text}""")
+                    except AttributeError:
+                        description = "Описания нет"
 
-                print(f"""description123: {description}""")
+                    print(f"""description123: {description}""")
 
-                # Тестируем добавление всех комментариев
-                user_comm = url.url_link_comment + one_repair_id
-                one_comment = get_one_comment(user_comm)
-                # print(one_comment)
+                    # Тестируем добавление всех комментариев
+                    user_comm = url.url_link_comment + one_repair_id
+                    one_comment = get_one_comment(user_comm)
+                    # print(one_comment)
 
-                one_repair_text = f"{mission_repair.text}\n\n{address_msg}\n\n" \
-                                  f"{description}\n\n{repair_link}\n\n{one_comment}"
+                    one_repair_text = f"{mission_repair.text}\n\n{address_msg}\n\n" \
+                                      f"{description}\n\n{repair_link}\n\n{one_comment}"
 
-                answer.append(one_repair_text)
+                    answer.append(one_repair_text)
 
-                x += 1
+                    x += 1
 
-            answer.append(f"Всего ремонтов: {x}")
+                answer.append(f"Всего ремонтов: {x}")
 
-        answer.reverse()
+            answer.reverse()
 
-        return answer
-    else:
-        print("error")
+            return answer
+        else:
+            print("error")
+    except:
+        create_sessions()
+        return ("Произошла ошибка сессии, бот залогинится снова, "
+                "попробуйте выполнить запрос позже, "
+                "возможно программа даже не сломалась.")
 
 
 def get_one_comment(url1):
