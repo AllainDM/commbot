@@ -33,7 +33,10 @@ data = {
     "username": config.loginUS,
     "password": config.pswUS
 }
-response = session.post(url_login, data=data, headers=HEADERS).text
+try:
+    response = session.post(url_login, data=data, headers=HEADERS).text
+except:
+    print("Ошибка создания сессии, перезапустите программу")
 
 
 def create_sessions():
@@ -45,7 +48,8 @@ def create_sessions():
             response = session.post(url_login, data=data, headers=HEADERS).text
             print("Сессия Юзера создана 2")
             break
-        except ConnectionError:
+        # except ConnectionError:
+        except:
             print("Ошибка создания сессии")
             time.sleep(60)
 
@@ -236,9 +240,8 @@ def get_html(url2):
             print("error")
     except:
         create_sessions()
-        return ("Произошла ошибка сессии, бот залогинится снова, "
-                "попробуйте выполнить запрос позже, "
-                "возможно программа даже не сломалась.")
+        return ["Произошла ошибка сессии, бот залогинится снова, "
+                "попробуйте выполнить запрос позже, возможно программа даже не сломалась."]
 
 
 def get_one_comment(url1):
